@@ -1,5 +1,6 @@
 name: Assemble Nexus sources
 
+# Restores the complete generated backend/frontend sources staged in .nexus_parts.
 on:
   push:
     branches:
