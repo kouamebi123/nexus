@@ -3,6 +3,7 @@ name: Assemble Nexus sources
 on:
   push:
     branches:
+      - main
       - restore-complete-sources-2
     paths:
       - '.nexus_parts/**'
@@ -39,4 +40,4 @@ jobs:
           git add backend/app.py frontend/app.js
           git rm -r .nexus_parts
           git commit -m "Restore complete Nexus application sources"
-          git push origin HEAD:restore-complete-sources-2
+          git push origin HEAD:${GITHUB_REF_NAME}
