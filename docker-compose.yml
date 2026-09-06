@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgis/postgis:17-3.5
+    environment:
+      POSTGRES_DB: nexus
+      POSTGRES_USER: nexus
+      POSTGRES_PASSWORD: nexus
+    volumes:
+      - nexus_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  app:
+    build: .
+    depends_on: [db]
+    environment:
+      DATABASE_URL: postgresql+psycopg://nexus:nexus@db:5432/nexus
+      JWT_SECRET: local-docker-secret-change-me
+      ENABLE_LIVE_PUBLIC_DATA: "true"
+      SEED_DEMO: "true"
+    ports:
+      - "8000:8000"
+volumes:
+  nexus_data:
