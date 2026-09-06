@@ -1,0 +1,21 @@
+name: Nexus CI
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+      - run: pip install -r requirements.txt pytest
+      - run: pytest -q
+        env:
+          DATABASE_URL: sqlite:///:memory:
+          JWT_SECRET: github-actions-test-secret
+          SEED_DEMO: 'false'
+          ENABLE_LIVE_PUBLIC_DATA: 'false'
+      - run: python -m py_compile backend/app.py
