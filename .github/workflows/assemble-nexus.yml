@@ -1,11 +1,9 @@
 name: Assemble Nexus sources
 
-# Restores the complete generated backend/frontend sources staged in .nexus_parts.
 on:
   push:
     branches:
       - main
-      - restore-complete-sources-2
     paths:
       - '.nexus_parts/**'
       - '.github/workflows/assemble-nexus.yml'
@@ -25,10 +23,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f .nexus_parts/backend_app.py.gz.b64
-          test -f .nexus_parts/frontend_app.js.gz.b64
-          base64 -d .nexus_parts/backend_app.py.gz.b64 | gzip -d > backend/app.py
-          base64 -d .nexus_parts/frontend_app.js.gz.b64 | gzip -d > frontend/app.js
+          python -c 'from pathlib import Path; import binascii,gzip; pairs=[(Path(".nexus_parts/backend_app.py.gz.hex"),Path("backend/app.py")),(Path(".nexus_parts/frontend_app.js.gz.hex"),Path("frontend/app.js"))]; [dst.write_bytes(gzip.decompress(binascii.unhexlify(src.read_text().strip()))) for src,dst in pairs]'
           python -m py_compile backend/app.py
           node --check frontend/app.js
 
@@ -41,4 +36,4 @@ jobs:
           git add backend/app.py frontend/app.js
           git rm -r .nexus_parts
           git commit -m "Restore complete Nexus application sources"
-          git push origin HEAD:${GITHUB_REF_NAME}
+          git push origin HEAD:main
