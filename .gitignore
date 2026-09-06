@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+nexus.db
+.pytest_cache/
+.tmp_*
+.tmp_shape/
+.DS_Store
